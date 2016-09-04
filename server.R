@@ -1,26 +1,24 @@
-library(shiny)
 library(wtss.R)
 library(dtwSat)
 
 wtss.server <- WTSS("http://www.dpi.inpe.br/tws/wtss")
 cv <- describeCoverage(wtss.server, "mod13q1_512")
 
-# filter patterns 
+# take the package patterns and filter them to just get the NDVI part
 fpatterns.list <- list()
-for (i in 1:length(patterns.list)){
-  lname <- names(patterns.list)[i]
-  pl <- patterns.list[[i]]
-  x <- as.matrix(coredata(pl)[, "ndvi"])
+for (i in 1:length(yearly_patterns_mt)){
+  lname <- as.character(labels(yearly_patterns_mt)[i])
+  ts.zoo <- yearly_patterns_mt[[i]]
+  ts.df <- coredata(ts.zoo)
+  x <- as.matrix(ts.df[, "ndvi"])
   colnames(x) <- "ndvi"
   fpl <- zoo(x = x, 
-             order.by = attr(pl, "index"), 
-             frequency = attr(pl, "frequency"))
+             order.by = attr(ts.zoo, "index"), 
+             frequency = attr(ts.zoo, "frequency"))
   fpatterns.list[[lname]] <- fpl
 }
 patt = twdtwTimeSeries(fpatterns.list)                           # get the patterns
 log_fun = logisticWeight(alpha=-0.1, beta=100)                   # logistic time-weight
-
-
 
 
 
@@ -46,8 +44,7 @@ shinyServer(function(input, output, session) {
   # Parse the GET query string
   output$queryText <- renderText({
     query <- parseQueryString(session$clientData$url_search)
-    
-    
+
     # Return a string with key-value pairs
     paste(names(query), query, sep = "=", collapse=", ")
   })
