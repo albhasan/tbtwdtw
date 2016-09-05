@@ -1,5 +1,5 @@
-# library(shiny)
-# runApp("/home/alber/Documents/ghProjects/tbtwdtw", launch.browser = FALSE, display.mode = "showcase", port = 7582)
+library(shiny)
+# runApp("/home/alber/Documents/ghProjects/tbtwdtw", launch.browser = FALSE, display.mode = "normal", port = 7582)
 # http://127.0.0.1:7582/?x=-74.51&y=4.4
 
 shinyUI(bootstrapPage(

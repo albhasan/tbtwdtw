@@ -1,3 +1,4 @@
+library(shiny)
 library(wtss.R)
 library(dtwSat)
 
